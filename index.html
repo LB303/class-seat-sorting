@@ -59,72 +59,27 @@
 
     </div>
 
-    <!-- 引入 Bootstrap JS 和依赖 -->
+    <!-- 依赖 -->
     <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://lb303.github.io/class-seat-sorting-lib/core.js"></script>
+    <!-- 主逻辑 -->
     <script>
         document.getElementById('seat-form').addEventListener('submit', function (event) {
-            
-            event.preventDefault(); // 阻止表单提交
+            event.preventDefault();
 
-            // 开始学号
             const startId = parseInt(document.getElementById('start-id').value);
-
-            // 结束学号
             const endId = parseInt(document.getElementById('end-id').value);
-
-            // 读取派出的学号
             const excludeIds = document.getElementById('exclude-ids').value
                 .split(' ')
                 .map(id => parseInt(id.trim()))
                 .filter(id => !isNaN(id));
-
-            // 读取列数
             const colSizes = document.getElementById('col-sizes').value
                 .split(' ')
                 .map(size => parseInt(size.trim()))
                 .filter(size => !isNaN(size));
 
-            // 生成学号列表
-            let studentIds = [];
-            for (let i = startId; i <= endId; i++) {
-                if (!excludeIds.includes(i)) {
-                    studentIds.push(i);
-                }
-            }
-
-            // 随机打乱学号
-            studentIds = shuffleArray(studentIds);
-
-            // 生成座位表
-            const seatTable = document.getElementById('seat-table');
-            seatTable.innerHTML = ''; // 清空之前的座位表
-
-            let index = 0;
-            const maxRows = Math.max(...colSizes); // 最大行数
-            for (let i = 0; i < maxRows; i++) {
-                const row = document.createElement('tr');
-                for (let j = 0; j < colSizes.length; j++) {
-                    const cell = document.createElement('td');
-                    if (i < colSizes[j] && index < studentIds.length) {
-                        cell.textContent = studentIds[index];
-                        index++;
-                    } else {
-                        cell.textContent = ''; // 空座位
-                    }
-                    row.appendChild(cell);
-                }
-                seatTable.appendChild(row);
-            }
+            core(startId, endId, excludeIds, colSizes);
         });
-
-        // 随机打乱数组
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
-        }
     </script>
 </body>
 </html>
